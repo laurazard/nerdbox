@@ -1,0 +1,26 @@
+version: '3'
+
+# Formal-spec (Quint) tasks live here so the root Taskfile stays focused on
+# build/test orchestration. The root include exposes these as `spec:*` tasks.
+# Commands run from the repo root (go-task runs included tasks in the
+# including Taskfile's directory) and assume `quint` is on PATH.
+tasks:
+  test:
+    desc: Run concrete-trace tests (`run` blocks) against all specs
+    cmds:
+      - quint test spec/shim/task/stdio_test.qnt --main=stdio_test
+
+  run:
+    desc: Random-simulation invariant check on all specs
+    cmds:
+      - quint run spec/shim/task/stdio.qnt --verbosity=1 --main=main --max-steps=20 --max-samples=500 --invariants CleanShutdownDrains TruncationImpliesTimeout
+
+  verify:
+    desc: Symbolic verification (Apalache) of every safety property across all specs
+    cmds:
+      - quint verify spec/shim/task/stdio.qnt --main=main --invariants CleanShutdownDrains TruncationImpliesTimeout
+
+  verify:liveness:
+    desc: Liveness check (TLC backend) of every temporal property
+    cmds:
+      - quint verify spec/shim/task/stdio.qnt --main=main --backend=tlc --temporal=Liveness --max-steps=20

@@ -1,3 +1,4 @@
 _output
 kernel/*.old
 .task
+_apalache-out

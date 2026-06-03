@@ -9,6 +9,11 @@ vars:
   KERNEL_ARCH:
     sh: 'a=$(go env GOARCH); case "$a" in amd64) echo x86_64;; *) echo "$a";; esac'
 
+includes:
+  # Formal-spec (Quint) tasks, exposed as `spec:*`. See spec/README.md.
+  spec:
+    taskfile: ./spec/Taskfile.yml
+
 tasks:
   default:
     desc: Build all outputs via Docker Buildx Bake
